@@ -23,17 +23,19 @@ def list_patients(request): # la variable request en la función list_patients r
         return Response(serializer.data)
     
     if request.method == 'POST':
-        serializer = PatientSerializer(data = request.data) 
-        serializer.is_valid(raise_exception=True) # provar con if
+        serializer = PatientSerializer(data = request.data) # le pasamos a PatientSerializer la informacione que 
+                                                            # queremos serializar a travez del request.data,el cual
+                                                            # contiene la informacion enviadad desde cliente 
+        serializer.is_valid(raise_exception=True)   # hacemos la validación del serializdor y con raise_exeception=true
         serializer.save()
         return Response(status=status.HTTP_201_CREATED)
     
 @api_view(['GET','PUT'])
 def detail_patient(request, pk): 
     if request.method == 'GET':
-        try:
+        try:    # usamos el try/except en caso de que el usuario pase un id no valido o que no exista
             patient = Patient.objects.get(id=pk)
-        except Patient.DoesNotExist:
+        except Patient.DoesNotExist:    # en caso de que no exista lanzará el estatus 404_not_found http
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = PatientSerializer(patient)
         return Response(serializer.data)
