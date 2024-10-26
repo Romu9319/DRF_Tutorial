@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
 
 # método GET -> /api/patients -> listará
 # método POST -> /api/patients -> creará
@@ -15,8 +15,9 @@ from rest_framework.generics import ListAPIView, CreateAPIView
 # método DELETE -> /api/patients/<pk> -> borrará
 
 
-## Vistas vasadas en FUNCIONES 
-"""@api_view(['GET','POST']) # debemos añadir el decorador para que DRF sea compatible con la vista, el decorador recibe un 
+##### Vistas vasadas en FUNCIONES #####
+"""
+@api_view(['GET','POST']) # debemos añadir el decorador para que DRF sea compatible con la vista, el decorador recibe un 
                           # parametro el cual indica el método con el que se va a ejecutar el endpoint
 def list_patients(request): # la variable request en la función list_patients representa la solicitud HTTP que se recibe al acceder al endpoint correspondiente
     if request.method == 'GET':
@@ -36,7 +37,8 @@ def list_patients(request): # la variable request en la función list_patients r
         return Response(status=status.HTTP_201_CREATED)
 """
 
-"""@api_view(['GET','PUT', 'DELETE'])
+"""
+@api_view(['GET','PUT', 'DELETE'])
 def detail_patient(request, pk): 
     try:    # usamos el try/except en caso de que el usuario pase un id no valido o que no exista
         patient = Patient.objects.get(id=pk)
@@ -55,12 +57,14 @@ def detail_patient(request, pk):
     
     if request.method == 'DELETE':
         patient.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)"""
+        return Response(status=status.HTTP_204_NO_CONTENT)
+"""
 
-## Vistas vasadas en CLASES
+##### Vistas vasadas en CLASES #####
 
-# APIView: clase base más fundamental de las CBVs 
-"""class ListPatientsView(APIView): # APIView nos da un conjunto de funcionalidades bases, ctrl+left_clic para explorarlas
+## APIView: clase base más fundamental de las CBVs ##
+"""
+class ListPatientsView(APIView): # APIView nos da un conjunto de funcionalidades bases, ctrl+left_clic para explorarlas
     allowed_methods = ['GET','POST'] # acá se especifican los métodos con los que trabajara la clase
 
     def get(self, request): # esta funcion obtiene todos los objetos creados y los serializa para posteriormente mostrarlos serializados 
@@ -72,7 +76,8 @@ def detail_patient(request, pk):
         serializer = PatientSerializer(data = request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(status=status.HTTP_201_CREATED)"""
+        return Response(status=status.HTTP_201_CREATED)
+
 
 class DetailPatientView(APIView):
     allowed_methods = ['GET','PUT', 'DELETE']
@@ -102,9 +107,15 @@ class DetailPatientView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         patient.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+"""
 
-# GenericAPIViews
+# Vistas Genéricas Concretas
 class ListPatientsView(ListAPIView, CreateAPIView): # APIView nos da un conjunto de funcionalidades bases, ctrl+left_clic para explorarlas
     allowed_methods = ['GET','POST'] # acá se especifican los métodos con los que trabajara la clase
+    serializer_class = PatientSerializer
+    queryset = Patient.objects.all()
+
+class DetailPatientView(RetrieveUpdateDestroyAPIView):
+    allowed_methods = ['GET','POST', 'DELETE'] # acá se especifican los métodos con los que trabajara la clase
     serializer_class = PatientSerializer
     queryset = Patient.objects.all()
