@@ -116,6 +116,6 @@ class ListPatientsView(ListAPIView, CreateAPIView): # APIView nos da un conjunto
     queryset = Patient.objects.all()
 
 class DetailPatientView(RetrieveUpdateDestroyAPIView):
-    allowed_methods = ['GET','POST', 'DELETE'] # acá se especifican los métodos con los que trabajara la clase
+    allowed_methods = ['GET','PUT', 'DELETE'] # acá se especifican los métodos con los que trabajara la clase
     serializer_class = PatientSerializer
     queryset = Patient.objects.all()
