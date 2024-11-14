@@ -22,7 +22,7 @@ class DoctorViewSet(viewsets.ModelViewSet):
     
     @action(['POST'], detail=True, url_path='set-off-vacation')
     def set_off_vacation(self, requests, pk):
-        doctor = self.get_object()
+        doctor = self.get_object() 
         doctor.is_on_vacation = False
         doctor.save()
         return Response({'status': 'On Dutty'})
