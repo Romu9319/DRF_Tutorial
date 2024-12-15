@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from rest_framework import status
 from rest_framework.test import APIClient
 from patients.models import Patient
 from doctors.models import Doctor
@@ -32,7 +33,9 @@ class DoctorViewSetTests(TestCase):
 
     
     def test_list_should_return_200(self):
-        url = reversed(
+        url = reverse(
             'doctor-appointments',
             kwargs={'pk': self.doctor.id}
-            )
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
